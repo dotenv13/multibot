@@ -1,0 +1,4 @@
+python-telegram-bot==20.7
+Pillow>=10.0.0
+python-binance>=1.0.19
+binance-connector
