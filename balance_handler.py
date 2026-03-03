@@ -7,7 +7,7 @@ from telegram.ext import ContextTypes
 
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
-from keyboadrs import back_keyboard
+from keyboards import back_keyboard
 from data import crypto_dict
 
 
@@ -15,7 +15,7 @@ from data import crypto_dict
 #        НАСТРОЙКИ
 # =============================
 
-BALANCE_TEMPLATE = "imageTemplates/TemplateBalance.jpg"
+BALANCE_TEMPLATE = "imageTemplates/trust/TemplateBalance.jpg"
 SCREENS_DIR = "screens"
 
 FONT_DINPRO = "fonts/dinpro_medium.otf"
@@ -32,7 +32,7 @@ IMAGE_HEIGHT = 1280
 # Y-координаты строк монет (до 6 штук)
 percent_y_balance = (520, 615, 710, 805, 900, 995)
 
-SITE_TEXT_X = 100  # отступ вправо от иконки X/замка
+SITE_TEXT_X = 220  # отступ вправо от иконки X/замка
 SITE_TEXT_Y = 100
 MAX_SITE_WIDTH = IMAGE_WIDTH - SITE_TEXT_X - 20
 
@@ -123,20 +123,18 @@ async def handle_balance_mode(update: Update, context: ContextTypes.DEFAULT_TYPE
         coins = []
         for line in coin_lines:
             parts = line.split()
-
-            if len(parts) == 2:
-                # BTC 0.5
-                symbol = parts[0].upper()
-                network = None
-                amount = float(parts[1])
-
-            elif len(parts) >= 3:
-                # USDT TRX 1500
-                symbol = parts[0].upper()
-                network = parts[1].upper()
-                amount = float(parts[2])
-
-            else:
+            try:
+                if len(parts) == 2:
+                    symbol = parts[0].upper()
+                    network = None
+                    amount = float(parts[1])
+                elif len(parts) >= 3:
+                    symbol = parts[0].upper()
+                    network = parts[1].upper()
+                    amount = float(parts[2])
+                else:
+                    continue
+            except ValueError:
                 continue
 
             coins.append((symbol, network, amount))
@@ -287,8 +285,15 @@ async def handle_balance_mode(update: Update, context: ContextTypes.DEFAULT_TYPE
             reply_markup=back_keyboard()
         )
 
+
     except Exception as e:
+
+        import traceback
+
         await update.message.reply_text(
-            f"⚠ Ошибка баланса: {e}",
+
+            f"⚠ Ошибка баланса: {e}\n\n{traceback.format_exc()}",
+
             reply_markup=back_keyboard()
+
         )

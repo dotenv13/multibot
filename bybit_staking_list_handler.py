@@ -10,19 +10,19 @@ from keyboards import back_keyboard
 #   ДАННЫЕ ДЛЯ СТЕЙКИНГ-ЛИСТА
 # =============================
 
-STAKING_LIST_TEMPLATE = "imageTemplates/trust/TemplateStaking.jpg"
+STAKING_LIST_TEMPLATE = "imageTemplates/bybit/TemplateStaking.jpg"
 
 FONT_SF_REGULAR = "fonts/SF-Pro-Display-Regular.otf"
 FONT_SF_MEDIUM  = "fonts/SF-Pro-Display-Medium.otf"
 FONT_SF_SEMI    = "fonts/SF-Pro-Display-Semibold.otf"
-font_symbol = ImageFont.truetype(FONT_SF_SEMI, 24)
+font_symbol = ImageFont.truetype(FONT_SF_REGULAR, 23)
 font_name    = ImageFont.truetype(FONT_SF_MEDIUM, 22)
-font_percent = ImageFont.truetype(FONT_SF_SEMI, 22)
-font_mrp     = ImageFont.truetype(FONT_SF_MEDIUM, 23)
+font_percent = ImageFont.truetype(FONT_SF_REGULAR, 23)
+font_mrp     = ImageFont.truetype(FONT_SF_REGULAR, 23)
 font_time   = ImageFont.truetype(FONT_SF_SEMI, 23)
 
-START_Y = 375
-ROW_GAP = 99   # ← увеличивай / уменьшай тут
+START_Y = 700
+ROW_GAP = 74   # ← увеличивай / уменьшай тут
 
 FONT_ROBOTO = "fonts/Roboto-Regular.ttf"
 FONT_ROBOTO_SEMI = "fonts/Roboto-SemiBold.ttf"
@@ -55,7 +55,7 @@ async def handle_staking_list_mode(update: Update, context: ContextTypes.DEFAULT
         )
         return
 
-    site_name = lines[0].strip()
+    site_name = "https://" + lines[0].strip()
     strings = lines[1:]
 
     image = Image.open(STAKING_LIST_TEMPLATE)
@@ -64,22 +64,20 @@ async def handle_staking_list_mode(update: Update, context: ContextTypes.DEFAULT
     font = ImageFont.truetype(FONT_ROBOTO, size=22)
     font_smaller = ImageFont.truetype(FONT_ROBOTO, size=20)
     font_normal = ImageFont.truetype(FONT_ROBOTO_SEMI, 24)
+    font_site = ImageFont.truetype(FONT_SF_REGULAR, size=19)
 
     IMAGE_WIDTH = 591
     IMAGE_HEIGHT = 1280
+
+    SITE_X = 215
+    SITE_Y = 108
 
     # Время
     formatted_time = datetime.now().strftime("%H:%M")
     draw.text((44, 22), formatted_time, font=font_time, fill="white")
 
     # --- НАЗВАНИЕ САЙТА (рядом с замочком в шаблоне) ---
-    draw.text(
-        (IMAGE_WIDTH // 2 + 15, 100),  # ← подгони X/Y при необходимости
-        site_name,
-        font=font_normal,
-        fill="white",
-        anchor="mm"
-    )
+    draw.text((SITE_X, SITE_Y), site_name, font=font_site, fill="#5f5f5f", anchor="mm")
 
     # Парсим строки вида "1 ETH 3.62"
     str_matrix = {}
@@ -94,7 +92,7 @@ async def handle_staking_list_mode(update: Update, context: ContextTypes.DEFAULT
         str_matrix[idx] = (s[1], s[2])  # (COIN, PERCENT)
 
     try:
-        for i in range(7):
+        for i in range(5):
             y = START_Y + i * ROW_GAP
 
             if i + 1 in str_matrix:
@@ -105,45 +103,40 @@ async def handle_staking_list_mode(update: Update, context: ContextTypes.DEFAULT
 
             # --- ИКОНКА ---
             icon = Image.open(f"coins/rounded_{coin_sym}.png").convert("RGBA")
-            icon = icon.resize((52, 52), Image.Resampling.LANCZOS)
+            icon = icon.resize((44, 44), Image.Resampling.LANCZOS)
             image.paste(icon, (22, y - 6), icon)
 
             # --- ТИКЕР ---
             draw.text(
-                (90, y - 10),
+                (78, y + 2),
                 coin_sym,
                 font=font_symbol,
                 fill="white"
             )
 
             # --- ПОЛНОЕ ИМЯ ---
-            full_name = crypto_dict.get(coin_sym, coin_sym)
-            draw.text(
-                (90, y + 26),
-                full_name,
-                font=font_name,
-                fill="white"
-            )
+            #full_name = crypto_dict.get(coin_sym, coin_sym)
+            #draw.text((90, y + 26), full_name, font=font_name, fill="white")
 
             # --- ПРОЦЕНТ ---
-            percent_text = f"+{percent_str}%"
+            percent_text = f"{percent_str}%"
             percent_box = draw.textbbox((0, 0), percent_text, font=font_percent)
             percent_w = percent_box[2] - percent_box[0]
 
             percent_x = IMAGE_WIDTH - 88 - percent_w
             draw.text(
-                (percent_x + 10, y + 8),
+                (percent_x + 10, y + 2),
                 percent_text,
                 font=font_percent,
-                fill="#64eca0"
+                fill="white"
             )
 
             # --- MRP ---
             draw.text(
-                (percent_x + percent_w + 16, y + 7),
+                (percent_x + percent_w + 16, y + 2),
                 "MRP",
                 font=font_mrp,
-                fill="#8e8e93"
+                fill="white"
             )
 
         os.makedirs(SCREENS_DIR, exist_ok=True)

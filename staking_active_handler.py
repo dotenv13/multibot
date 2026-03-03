@@ -4,13 +4,13 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
-from keyboadrs import back_keyboard
+from keyboards import back_keyboard
 
 # =============================
 #   ДАННЫЕ ДЛЯ СТЕЙКИНГ-ЛИСТА
 # =============================
 
-STAKING_ACTIVE_TEMPLATE = "imageTemplates/TemplateActiveStaking.jpg"
+STAKING_ACTIVE_TEMPLATE = "imageTemplates/trust/TemplateActiveStaking.jpg"
 
 FONT_ROBOTO = "fonts/Roboto-Regular.ttf"
 FONT_ROBOTO_SEMI = "fonts/Roboto-SemiBold.ttf"

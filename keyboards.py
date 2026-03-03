@@ -1,5 +1,11 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
+def providers_keyboard():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("Trust", callback_data="prov_trust")],
+        [InlineKeyboardButton("Bybit", callback_data="prov_bybit")],
+    ])
+
 def main_menu_keyboard():
     return InlineKeyboardMarkup([
         [InlineKeyboardButton("💰 Баланс", callback_data="mode_balance")],
@@ -9,5 +15,6 @@ def main_menu_keyboard():
 
 def back_keyboard():
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("В главное меню", callback_data="back_to_menu")]
+        [InlineKeyboardButton("⬅️ В меню режимов", callback_data="back_to_menu")],
+        [InlineKeyboardButton("🏦 К выбору биржи", callback_data="back_to_providers")],
     ])
