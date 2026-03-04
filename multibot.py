@@ -10,8 +10,10 @@ from bybit_balance_handler import handle_balance_mode as bybit_balance
 from bybit_staking_list_handler import handle_staking_list_mode as bybit_staking_list
 from bybit_staking_active_handler import handle_staking_active_mode as bybit_staking_active_list
 
+from earn_handler import handle_earn_mode
+
 # ТОКЕН БОТА
-BOT_TOKEN = "8263457104:AAF_xKcu2tMfmLgjBeaHp3WSZPXP1NFseEA"
+BOT_TOKEN = "8349418037:AAHJaMQfa9ryWJCYXgHjUDUQwfsM67tevS0"
 
 # Провайдеры
 PROV_TRUST = "trust"
@@ -21,6 +23,7 @@ PROV_BYBIT = "bybit"
 MODE_BALANCE = "balance"
 MODE_STAKING_LIST = "staking_list"
 MODE_STAKING_ACTIVE = "staking_active"
+MODE_EARN = "earn"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -175,6 +178,21 @@ async def on_menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         await query.message.reply_text(msg, parse_mode="Markdown", reply_markup=back_keyboard())
 
+    if data == "mode_earn":
+        context.user_data["mode"] = MODE_EARN
+        msg = (
+            "💸 Заработок\n\n"
+            "Отправь 6 строк:\n"
+            "```text\n"
+            "USDT ETH 4.5\n"
+            "USDC ETH 3.4\n"
+            "USDT TRX 1.7\n"
+            "ETH 2.6\n"
+            "BNB 1.0\n"
+            "SOL 6.6\n"
+            "```"
+        )
+        await query.message.reply_text(msg, parse_mode="Markdown", reply_markup=back_keyboard())
 
 # =============================
 #   ОБЩИЙ ОБРАБОТЧИК ТЕКСТА
@@ -199,8 +217,10 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await trust_staking_list(update, context)
         elif mode == MODE_STAKING_ACTIVE:
             await trust_staking_active_list(update, context)
+        elif mode == MODE_EARN:
+            await handle_earn_mode(update, context)
         else:
-            await update.message.reply_text("Неизвестный режим.", reply_markup=main_menu_keyboard())
+            await update.message.reply_text("Неизвестный режим.", reply_markup=providers_keyboard())
         return
 
     if provider == PROV_BYBIT:
@@ -210,8 +230,10 @@ async def on_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await bybit_staking_list(update, context)
         elif mode == MODE_STAKING_ACTIVE:
             await bybit_staking_active_list(update, context)
+        elif mode == MODE_EARN:
+            await update.message.reply_text("⚠ Режим недоступен для Bybit.", reply_markup=providers_keyboard())
         else:
-            await update.message.reply_text("Неизвестный режим.", reply_markup=main_menu_keyboard())
+            await update.message.reply_text("Неизвестный режим.", reply_markup=providers_keyboard())
         return
 
 # =============================

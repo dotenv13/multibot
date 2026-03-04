@@ -11,6 +11,7 @@ def main_menu_keyboard():
         [InlineKeyboardButton("💰 Баланс", callback_data="mode_balance")],
         [InlineKeyboardButton("📋 Стейкинг (список)", callback_data="mode_staking_list")],
         [InlineKeyboardButton("📈 Активный стейкинг", callback_data="mode_staking_active")],
+        [InlineKeyboardButton("💸 Заработок", callback_data="mode_earn")],
     ])
 
 def back_keyboard():
