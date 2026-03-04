@@ -42,6 +42,9 @@ NATIVE_ICON_TOP = [1057, 1194, 1330]
 # X тикера
 TICKER_X = 160
 
+DO_X      = 440   # подбери по шаблону
+PERCENT_X = 480   # подбери по шаблону
+
 # =============================
 #        ЦВЕТА
 # =============================
@@ -109,9 +112,15 @@ def draw_coin_row(draw, image, icon_top, sym, network, percent_str, font_ticker,
         if change_str:
             draw.text((TICKER_X + price_w + 8, price_y), change_str, font=font_price, fill=change_color, anchor="lt")
 
-    # Процент
-    draw.text((ICON_X + ICON_SIZE + percent_offset, percent_y), percent_str + "%",
-              font=font_percent, fill=percent_color, anchor="lt")
+    # "до"
+    draw.text((DO_X, percent_y + 8), "до", font=font_text, fill="#444444", anchor="lt")
+
+    # процент
+    draw.text((PERCENT_X, percent_y), percent_str + "%", font=font_percent, fill=percent_color, anchor="lt")
+
+    # "годовых" — после процента динамически
+    percent_w = draw.textlength(percent_str + "%", font=font_percent)
+    draw.text((PERCENT_X + percent_w + 8, percent_y + 8), "годовых", font=font_text, fill="#444444", anchor="lt")
 
 
 def generate_earn_card(
@@ -125,7 +134,7 @@ def generate_earn_card(
     # Шрифты
     font_time      = ImageFont.truetype(FONT_SF_SEMI,    30)
     font_ticker    = ImageFont.truetype(FONT_SF_SEMI,    31)
-    font_text      = ImageFont.truetype(FONT_SF_REGULAR, 28)
+    font_text      = ImageFont.truetype(FONT_SF_SEMI,    24)
     font_percent   = ImageFont.truetype(FONT_SF_BOLD,    31)
     font_percent_n = ImageFont.truetype(FONT_SF_SEMI,    31)
     font_price     = ImageFont.truetype(FONT_SF_BOLD, 23)
